@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <dimen name="textInputView_text_size_default">16sp</dimen>
+
+    <style name="InputView.errorTextAppearance" parent="@android:style/TextAppearance.Medium">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">?attr/colorError</item>
+    </style>
+
+    <style name="InputView.hintTextAppearance" parent="@android:style/TextAppearance.Small">
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <declare-styleable name="TextInputView">
+        <attr name="textInputHintText" format="string" />
+        <attr name="textInputErrorAppearance" format="reference" />
+        <attr name="textInputHintAppearance" format="reference" />
+        <attr name="textInputBackgroundColor" format="color" />
+        <attr name="textInputBoxStrokeColor" format="color" />
+        <attr name="textInputBoxStrokeWidth" format="integer" />
+        <attr name="textInputCharLimit" format="integer" />
+        <attr name="textInputTextSize" format="dimension" />
+        <attr name="textInputStartIcon" format="reference" />
+        <attr name="textInputStartIconColor" format="reference" />
+        <attr name="textInputEndIcon" format="reference" />
+        <attr name="textInputEndIconColor" format="reference" />
+        <attr name="textInputText" format="string" />
+        <attr name="textInputAllowedCharacters" format="string" />
+        <attr name="textInputError" format="string" />
+        <attr name="textInputMaxLines" format="integer" />
+        <attr name="textInputValidationEnabled" format="boolean" />
+        <attr name="textInputViewType" format="enum">
+            <enum name="boxed" value="1" />
+            <enum name="outlined" value="2" />
+        </attr>
+        <attr name="textInputDirection" format="integer">
+            <enum name="inherit" value="0" />
+            <enum name="firstStrong" value="1" />
+            <enum name="anyRtl" value="2" />
+            <enum name="ltr" value="3" />
+            <enum name="rtl" value="4" />
+            <enum name="locale" value="5" />
+            <enum name="firstStrongLtr" value="6" />
+            <enum name="firstStrongRtl" value="7" />
+        </attr>
+
+        <attr name="textInputAlignment" format="integer">
+            <enum name="inherit" value="0" />
+            <enum name="gravity" value="1" />
+            <enum name="textStart" value="2" />
+            <enum name="textEnd" value="3" />
+            <enum name="center" value="4" />
+            <enum name="viewStart" value="5" />
+            <enum name="viewEnd" value="6" />
+        </attr>
+        <attr name="textInputType">
+            <flag name="none" value="0x00000000" />
+            <flag name="text" value="0x00000001" />
+            <flag name="textCapCharacters" value="0x00001001" />
+            <flag name="textCapWords" value="0x00002001" />
+            <flag name="textCapSentences" value="0x00004001" />
+            <flag name="textAutoCorrect" value="0x00008001" />
+            <flag name="textAutoComplete" value="0x00010001" />
+            <flag name="textMultiLine" value="0x00020001" />
+            <flag name="textImeMultiLine" value="0x00040001" />
+            <flag name="textNoSuggestions" value="0x00080001" />
+            <flag name="textUri" value="0x00000011" />
+            <flag name="textEmailAddress" value="0x00000021" />
+            <flag name="textEmailSubject" value="0x00000031" />
+            <flag name="textShortMessage" value="0x00000041" />
+            <flag name="textLongMessage" value="0x00000051" />
+            <flag name="textPersonName" value="0x00000061" />
+            <flag name="textPostalAddress" value="0x00000071" />
+            <flag name="textPassword" value="0x00000081" />
+            <flag name="textVisiblePassword" value="0x00000091" />
+            <flag name="textWebEditText" value="0x000000a1" />
+            <flag name="textFilter" value="0x000000b1" />
+            <flag name="textPhonetic" value="0x000000c1" />
+            <flag name="textWebEmailAddress" value="0x000000d1" />
+            <flag name="textWebPassword" value="0x000000e1" />
+            <flag name="number" value="0x00000002" />
+            <flag name="numberSigned" value="0x00001002" />
+            <flag name="numberDecimal" value="0x00002002" />
+            <flag name="numberPassword" value="0x00000012" />
+            <flag name="phone" value="0x00000003" />
+            <flag name="datetime" value="0x00000004" />
+            <flag name="date" value="0x00000014" />
+            <flag name="time" value="0x00000024" />
+        </attr>
+        <attr name="textInputImeOptions">
+            <flag name="normal" value="0x00000000" />
+            <flag name="actionUnspecified" value="0x00000000" />
+            <flag name="actionNone" value="0x00000001" />
+            <flag name="actionGo" value="0x00000002" />
+            <flag name="actionSearch" value="0x00000003" />
+            <flag name="actionSend" value="0x00000004" />
+            <flag name="actionNext" value="0x00000005" />
+            <flag name="actionDone" value="0x00000006" />
+            <flag name="actionPrevious" value="0x00000007" />
+            <flag name="flagNoPersonalizedLearning" value="0x1000000" />
+            <flag name="flagNoFullscreen" value="0x2000000" />
+            <flag name="flagNavigatePrevious" value="0x4000000" />
+            <flag name="flagNavigateNext" value="0x8000000" />
+            <flag name="flagNoExtractUi" value="0x10000000" />
+            <flag name="flagNoAccessoryAction" value="0x20000000" />
+            <flag name="flagNoEnterAction" value="0x40000000" />
+            <flag name="flagForceAscii" value="0x80000000" />
+        </attr>
+    </declare-styleable>
+
+    <style name="InputViewOutlined" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
+        <item name="boxStrokeWidth">1dp</item>
+        <item name="startIconTint">?android:attr/colorPrimary</item>
+        <item name="errorIconTint">?colorError</item>
+        <item name="errorTextAppearance">@style/InputView.errorTextAppearance</item>
+        <item name="hintTextAppearance">@style/InputView.hintTextAppearance</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="InputViewBoxed" parent="Widget.MaterialComponents.TextInputLayout.FilledBox.Dense">
+        <item name="boxStrokeWidth">1dp</item>
+        <item name="startIconTint">?android:attr/colorPrimary</item>
+        <item name="errorIconTint">?colorError</item>
+        <item name="errorTextAppearance">@style/InputView.errorTextAppearance</item>
+        <item name="hintTextAppearance">@style/InputView.hintTextAppearance</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="InputView" />
+
+    <style name="InputView.editText" parent="ThemeOverlay.MaterialComponents.TextInputEditText">
+        <item name="android:inputType">textVisiblePassword</item>
+        <item name="android:imeOptions">flagNoExtractUi</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">match_parent</item>
+    </style>
+
+</resources>

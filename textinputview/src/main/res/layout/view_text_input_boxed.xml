@@ -1,0 +1,13 @@
+<merge xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <com.google.android.material.textfield.TextInputLayout
+        style="@style/InputViewBoxed"
+        android:tag="inputLayout">
+
+        <com.google.android.material.textfield.TextInputEditText
+            style="@style/InputView.editText"
+            android:tag="editText" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+</merge>
