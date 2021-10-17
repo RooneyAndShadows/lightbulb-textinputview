@@ -1,4 +1,4 @@
-package com.rands.lightbulb.textinputview;
+package com.github.RooneyAndShadows.lightbulb.textinputview;
 
 import androidx.appcompat.app.AppCompatActivity;
 
