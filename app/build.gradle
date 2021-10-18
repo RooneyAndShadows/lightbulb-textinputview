@@ -6,7 +6,7 @@ android {
     compileSdk 30
 
     defaultConfig {
-        applicationId "com.rands.lightbulb.textinputview"
+        applicationId "com.github.rooneyandshadows.lightbulb.textinputview"
         minSdk 24
         targetSdk 30
         versionCode 1

@@ -1,4 +1,4 @@
-package com.github.RooneyAndShadows.lightbulb.textinputview;
+package com.github.rooneyandshadows.lightbulb.textinputview;
 
 import androidx.appcompat.app.AppCompatActivity;
 

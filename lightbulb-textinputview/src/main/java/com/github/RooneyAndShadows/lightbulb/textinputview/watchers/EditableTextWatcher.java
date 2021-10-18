@@ -1,4 +1,4 @@
-package com.github.RooneyAndShadows.lightbulb.textinputview.watchers;
+package com.github.rooneyandshadows.lightbulb.textinputview.watchers;
 
 import android.text.Editable;
 import android.text.TextWatcher;

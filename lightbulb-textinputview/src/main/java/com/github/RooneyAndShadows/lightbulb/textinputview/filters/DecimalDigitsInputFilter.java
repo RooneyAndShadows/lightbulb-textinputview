@@ -1,4 +1,4 @@
-package com.github.RooneyAndShadows.lightbulb.textinputview.filters;
+package com.github.rooneyandshadows.lightbulb.textinputview.filters;
 
 import android.text.InputFilter;
 import android.text.Spanned;

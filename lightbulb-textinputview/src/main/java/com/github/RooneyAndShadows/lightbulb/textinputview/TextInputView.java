@@ -1,4 +1,4 @@
-package com.github.RooneyAndShadows.lightbulb.textinputview;
+package com.github.rooneyandshadows.lightbulb.textinputview;
 
 import android.content.Context;
 import android.content.res.ColorStateList;
@@ -18,9 +18,9 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.widget.RelativeLayout;
 
-import com.github.RooneyAndShadows.commons.string.StringUtils;
-import com.github.RooneyAndShadows.lightbulb.commons.utils.KeyboardUtils;
-import com.github.RooneyAndShadows.lightbulb.commons.utils.ResourceUtils;
+import com.github.rooneyandshadows.commons.string.StringUtils;
+import com.github.rooneyandshadows.lightbulb.commons.utils.KeyboardUtils;
+import com.github.rooneyandshadows.lightbulb.commons.utils.ResourceUtils;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
