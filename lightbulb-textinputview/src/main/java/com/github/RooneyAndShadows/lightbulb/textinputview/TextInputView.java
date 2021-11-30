@@ -443,10 +443,6 @@ public class TextInputView extends RelativeLayout {
         editText.setOnFocusChangeListener((v, hasFocus) -> editText.post(() -> {
             if (focusChangeListener != null)
                 focusChangeListener.onFocusChange(this, hasFocus);
-            if (hasFocus) {
-                KeyboardUtils.showKeyboard(editText);
-            } else
-                KeyboardUtils.hideKeyboard(editText);
         }));
         editText.setInputType(inputType);
         setInputFilters(new InputFilter[]{});
@@ -457,7 +453,7 @@ public class TextInputView extends RelativeLayout {
         editText.setTypeface(Typeface.DEFAULT);
         editText.removeTextChangedListener(textWatcher);
         editText.addTextChangedListener(textWatcher);
-        editText.setShowSoftInputOnFocus(false);
+        editText.setShowSoftInputOnFocus(true);
         editText.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
         if (inputBackgroundColor == Color.TRANSPARENT)
             editText.setBackgroundColor(Color.TRANSPARENT);
