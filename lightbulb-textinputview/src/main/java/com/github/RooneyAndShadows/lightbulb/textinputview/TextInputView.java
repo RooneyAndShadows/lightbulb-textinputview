@@ -443,6 +443,10 @@ public class TextInputView extends RelativeLayout {
         editText.setOnFocusChangeListener((v, hasFocus) -> editText.post(() -> {
             if (focusChangeListener != null)
                 focusChangeListener.onFocusChange(this, hasFocus);
+            if (hasFocus)
+                KeyboardUtils.showKeyboard(editText);
+            else
+                KeyboardUtils.hideKeyboard(editText);
         }));
         editText.setInputType(inputType);
         setInputFilters(new InputFilter[]{});
