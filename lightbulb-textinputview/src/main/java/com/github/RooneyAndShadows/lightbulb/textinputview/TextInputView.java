@@ -45,6 +45,7 @@ public class TextInputView extends RelativeLayout {
     private String text = "";
     private String hintText;
     private String errorText;
+    private String suffixText;
     private String allowedCharacters;
     private Drawable startIcon;
     private Drawable endIcon;
@@ -96,15 +97,10 @@ public class TextInputView extends RelativeLayout {
         TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.TextInputView, 0, 0);
         try {
             /*strings*/
-            hintText = a.getString(R.styleable.TextInputView_textInputHintText);
-            if (hintText == null || hintText.equals(""))
-                hintText = "";
-            text = a.getString(R.styleable.TextInputView_textInputText);
-            if (text == null || text.equals(""))
-                text = "";
-            errorText = a.getString(R.styleable.TextInputView_textInputError);
-            if (errorText == null || errorText.equals(""))
-                errorText = "";
+            hintText = StringUtils.getOrDefault(a.getString(R.styleable.TextInputView_textInputHintText), "");
+            text = StringUtils.getOrDefault(a.getString(R.styleable.TextInputView_textInputText), "");
+            errorText = StringUtils.getOrDefault(a.getString(R.styleable.TextInputView_textInputError), "");
+            suffixText = StringUtils.getOrDefault(a.getString(R.styleable.TextInputView_textInputSuffixText), "");
             allowedCharacters = a.getString(R.styleable.TextInputView_textInputAllowedCharacters);
             /*resource reffs*/
             errorAppearance = a.getResourceId(R.styleable.TextInputView_textInputErrorAppearance, R.style.InputView_errorTextAppearance);
@@ -278,6 +274,11 @@ public class TextInputView extends RelativeLayout {
         setupHint();
     }
 
+    public void setSuffixText(String text) {
+        suffixText = text;
+        inputLayout.setSuffixText(suffixText);
+    }
+
     public void setText(String newVal) {
         if (newVal == null)
             newVal = "";
@@ -301,6 +302,10 @@ public class TextInputView extends RelativeLayout {
 
     public String getText() {
         return text;
+    }
+
+    public String getSuffixText() {
+        return suffixText;
     }
 
     public void moveCursorToEnd() {
@@ -346,6 +351,12 @@ public class TextInputView extends RelativeLayout {
         setEnabled(enabled);
     }
 
+    @BindingAdapter("textInputSuffixText")
+    public static void setSuffixText(TextInputView view, String newSuffix) {
+        if (!view.getSuffixText().equals(newSuffix))
+            view.setSuffixText(newSuffix);
+    }
+
     @BindingAdapter("textInputHintText")
     public static void setHint(TextInputView view, String text) {
         view.setHintText(text);
@@ -386,6 +397,7 @@ public class TextInputView extends RelativeLayout {
     private void initInputLayout() {
         if (textInputViewType.equals(ViewTypes.BOXED))
             inputLayout.setBoxBackgroundColor(inputBackgroundColor);
+        inputLayout.setSuffixText(suffixText);
         inputLayout.setHintTextAppearance(hintAppearance);
         inputLayout.setErrorTextAppearance(errorAppearance);
         inputLayout.setHintAnimationEnabled(false);
@@ -537,6 +549,7 @@ public class TextInputView extends RelativeLayout {
         SavedState myState = new SavedState(superState);
         myState.text = text;
         myState.enabled = isEnabled();
+        myState.suffixText = suffixText;
         myState.inputType = inputType;
         myState.startIconColor = startIconColor;
         myState.editTextFocused = hasFocus();
@@ -558,6 +571,7 @@ public class TextInputView extends RelativeLayout {
         SavedState savedState = (SavedState) state;
         super.onRestoreInstanceState(savedState.getSuperState());
         errorText = savedState.errorMessage;
+        suffixText = savedState.suffixText;
         errorEnabled = savedState.errorEnabled;
         validationEnabled = savedState.validationEnabled;
         enabled = savedState.enabled;
@@ -586,6 +600,7 @@ public class TextInputView extends RelativeLayout {
         private String errorMessage;
         private String allowedCharacters;
         private String text;
+        private String suffixText;
         private Integer inputType;
         private Parcelable editTextState;
         private SparseArray<Parcelable> inputLayoutState;
@@ -607,8 +622,9 @@ public class TextInputView extends RelativeLayout {
             errorMessage = in.readString();
             allowedCharacters = in.readString();
             text = in.readString();
-            inputLayoutState = in.readSparseArray(getClass().getClassLoader());
+            suffixText = in.readString();
             editTextState = in.readParcelable(getClass().getClassLoader());
+            inputLayoutState = in.readSparseArray(getClass().getClassLoader());
         }
 
         @Override
@@ -622,10 +638,10 @@ public class TextInputView extends RelativeLayout {
             out.writeInt(inputType);
             out.writeInt(startIconColor);
             out.writeInt(errorAppearance);
-            out.writeInt(errorAppearance);
-            out.writeString(text);
             out.writeString(errorMessage);
             out.writeString(allowedCharacters);
+            out.writeString(text);
+            out.writeString(suffixText);
             out.writeParcelable(editTextState, flags);
             out.writeSparseArray(inputLayoutState);
         }

@@ -25,6 +25,7 @@
         <attr name="textInputStartIconColor" format="reference" />
         <attr name="textInputEndIcon" format="reference" />
         <attr name="textInputEndIconColor" format="reference" />
+        <attr name="textInputSuffixText" format="string" />
         <attr name="textInputText" format="string" />
         <attr name="textInputAllowedCharacters" format="string" />
         <attr name="textInputError" format="string" />
