@@ -106,7 +106,7 @@ public class TextInputView extends RelativeLayout {
             errorAppearance = a.getResourceId(R.styleable.TextInputView_textInputErrorAppearance, R.style.InputView_errorTextAppearance);
             hintAppearance = a.getResourceId(R.styleable.TextInputView_textInputHintAppearance, R.style.InputView_hintTextAppearance);
             /*colors*/
-            inputBackgroundColor = a.getColor(R.styleable.TextInputView_textInputBackgroundColor, ResourceUtils.getColorByAttribute(context, R.attr.colorSurface));
+            inputBackgroundColor = a.getColor(R.styleable.TextInputView_textInputBackgroundColor, ColorUtils.setAlphaComponent(ResourceUtils.getColorByAttribute(context, R.attr.colorOnSurface), 30));
             boxStrokeColor = ColorUtils.setAlphaComponent(a.getColor(R.styleable.TextInputView_textInputBoxStrokeColor, ResourceUtils.getColorByAttribute(context, R.attr.colorOnSurface)), 140);
             startIconColor = ColorUtils.setAlphaComponent(a.getColor(R.styleable.TextInputView_textInputStartIconColor, ResourceUtils.getColorByAttribute(context, R.attr.colorOnSurface)), 140);
             endIconColor = ColorUtils.setAlphaComponent(a.getColor(R.styleable.TextInputView_textInputEndIcon, ResourceUtils.getColorByAttribute(context, R.attr.colorOnSurface)), 140);
