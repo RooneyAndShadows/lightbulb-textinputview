@@ -30,6 +30,8 @@
         <attr name="textInputAllowedCharacters" format="string" />
         <attr name="textInputError" format="string" />
         <attr name="textInputMaxLines" format="integer" />
+        <attr name="textInputMinLines" format="integer" />
+        <attr name="textInputIsSingleLine" format="boolean" />
         <attr name="textInputValidationEnabled" format="boolean" />
         <attr name="textInputViewType" format="enum">
             <enum name="boxed" value="1" />

@@ -56,6 +56,7 @@ public class TextInputView extends RelativeLayout {
     private int hintAppearance;
     private int errorAppearance;
     private int maxLines;
+    private int minLines;
     private int textSize;
     private int maxCharacters;
     private int boxStrokeWidth;
@@ -63,6 +64,7 @@ public class TextInputView extends RelativeLayout {
     private int inputTextDirection;
     private int inputType;
     private int imeOptions;
+    private boolean singleLine;
     private boolean errorEnabled = false;
     private boolean enabled = true;
     private boolean endIconVisible = true;
@@ -115,11 +117,13 @@ public class TextInputView extends RelativeLayout {
             endIcon = a.getDrawable(R.styleable.TextInputView_textInputEndIcon);
             /*options*/
             validationEnabled = a.getBoolean(R.styleable.TextInputView_textInputValidationEnabled, false);
+            singleLine = a.getBoolean(R.styleable.TextInputView_textInputIsSingleLine, true);
             textInputViewType = ViewTypes.valueOf(a.getInt(R.styleable.TextInputView_textInputViewType, 1));
             inputTextAlignment = a.getInteger(R.styleable.TextInputView_textInputAlignment, 0);
             inputTextDirection = a.getInteger(R.styleable.TextInputView_textInputDirection, 0);
             imeOptions = a.getInteger(R.styleable.TextInputView_textInputImeOptions, 0x00000000);
             maxLines = a.getInteger(R.styleable.TextInputView_textInputMaxLines, 1);
+            minLines = a.getInteger(R.styleable.TextInputView_textInputMinLines, 1);
             textSize = a.getDimensionPixelSize(R.styleable.TextInputView_textInputTextSize, ResourceUtils.getDimenPxById(context, R.dimen.textInputView_text_size_default));
             boxStrokeWidth = a.getInteger(R.styleable.TextInputView_textInputBoxStrokeWidth, 1);
             if (boxStrokeWidth < 0)
@@ -163,11 +167,19 @@ public class TextInputView extends RelativeLayout {
         validate();
     }
 
-    private void setErrorEnabled(Boolean errorEnabled) {
-        if (this.errorEnabled != errorEnabled) {
-            this.errorEnabled = errorEnabled;
-            inputLayout.setErrorEnabled(errorEnabled);
-        }
+    public void setMaxLines(int maxLines) {
+        this.maxLines = maxLines;
+        editText.setMaxLines(maxLines);
+    }
+
+    public void setMinLines(int minLines) {
+        this.minLines = minLines;
+        editText.setMinLines(minLines);
+    }
+
+    public void setSingleLine(boolean singleLine) {
+        this.singleLine = singleLine;
+        editText.setSingleLine(singleLine);
     }
 
     public void setInputType(Integer inputType) {
@@ -308,6 +320,22 @@ public class TextInputView extends RelativeLayout {
         return suffixText;
     }
 
+    public int getMaxLines() {
+        return maxLines;
+    }
+
+    public int getMinLines() {
+        return minLines;
+    }
+
+    public int getInputType() {
+        return inputType;
+    }
+
+    public boolean isSingleLine() {
+        return singleLine;
+    }
+
     public void moveCursorToEnd() {
         if (editText != null && editText.getText() != null && editText.getText().length() > 0)
             editText.setSelection(editText.getText().length());
@@ -343,12 +371,6 @@ public class TextInputView extends RelativeLayout {
             TextInputView.this.requestFocus();
             KeyboardUtils.showKeyboard(editText);
         });
-    }
-
-    private void initView() {
-        initInputLayout();
-        initEditText();
-        setEnabled(enabled);
     }
 
     @BindingAdapter("textInputSuffixText")
@@ -392,6 +414,19 @@ public class TextInputView extends RelativeLayout {
                 attrChange.onChange();
             }
         });
+    }
+
+    private void initView() {
+        initInputLayout();
+        initEditText();
+        setEnabled(enabled);
+    }
+
+    private void setErrorEnabled(Boolean errorEnabled) {
+        if (this.errorEnabled != errorEnabled) {
+            this.errorEnabled = errorEnabled;
+            inputLayout.setErrorEnabled(errorEnabled);
+        }
     }
 
     private void initInputLayout() {
@@ -464,6 +499,8 @@ public class TextInputView extends RelativeLayout {
         setInputFilters(new InputFilter[]{});
         editText.setTextAlignment(inputTextAlignment);
         editText.setTextDirection(inputTextDirection);
+        editText.setMinLines(minLines);
+        editText.setSingleLine(singleLine);
         editText.setMaxLines(maxLines);
         editText.setImeOptions(imeOptions);
         editText.setTypeface(Typeface.DEFAULT);
@@ -551,12 +588,15 @@ public class TextInputView extends RelativeLayout {
         myState.enabled = isEnabled();
         myState.suffixText = suffixText;
         myState.inputType = inputType;
+        myState.maxLines = maxLines;
+        myState.minLines = minLines;
         myState.startIconColor = startIconColor;
         myState.editTextFocused = hasFocus();
         myState.errorMessage = errorText;
         myState.errorEnabled = errorEnabled;
         myState.errorAppearance = errorAppearance;
         myState.validationEnabled = validationEnabled;
+        myState.singleLine = singleLine;
         myState.allowedCharacters = allowedCharacters;
         myState.endIconVisible = endIconVisible;
         myState.editTextState = editText.onSaveInstanceState();
@@ -572,12 +612,15 @@ public class TextInputView extends RelativeLayout {
         super.onRestoreInstanceState(savedState.getSuperState());
         errorText = savedState.errorMessage;
         suffixText = savedState.suffixText;
+        inputType = savedState.inputType;
+        minLines = savedState.minLines;
+        maxLines = savedState.maxLines;
         errorEnabled = savedState.errorEnabled;
         validationEnabled = savedState.validationEnabled;
+        singleLine = savedState.singleLine;
         enabled = savedState.enabled;
         errorAppearance = savedState.errorAppearance;
         endIconVisible = savedState.endIconVisible;
-        inputType = savedState.inputType;
         startIconColor = savedState.startIconColor;
         text = savedState.text;
         boolean editTextPreviouslyFocused = savedState.editTextFocused;
@@ -595,13 +638,16 @@ public class TextInputView extends RelativeLayout {
         private boolean validationEnabled;
         private boolean editTextFocused;
         private boolean endIconVisible;
+        private boolean singleLine;
         private int errorAppearance;
         private int startIconColor;
+        private int inputType;
+        private int minLines;
+        private int maxLines;
         private String errorMessage;
         private String allowedCharacters;
         private String text;
         private String suffixText;
-        private Integer inputType;
         private Parcelable editTextState;
         private SparseArray<Parcelable> inputLayoutState;
 
@@ -616,7 +662,10 @@ public class TextInputView extends RelativeLayout {
             validationEnabled = in.readByte() != 0;
             editTextFocused = in.readByte() != 0;
             endIconVisible = in.readByte() != 0;
+            singleLine = in.readByte() != 0;
             inputType = in.readInt();
+            minLines = in.readInt();
+            maxLines = in.readInt();
             startIconColor = in.readInt();
             errorAppearance = in.readInt();
             errorMessage = in.readString();
@@ -635,7 +684,10 @@ public class TextInputView extends RelativeLayout {
             out.writeByte((byte) (enabled ? 1 : 0));
             out.writeByte((byte) (editTextFocused ? 1 : 0));
             out.writeByte((byte) (endIconVisible ? 1 : 0));
+            out.writeByte((byte) (singleLine ? 1 : 0));
             out.writeInt(inputType);
+            out.writeInt(minLines);
+            out.writeInt(maxLines);
             out.writeInt(startIconColor);
             out.writeInt(errorAppearance);
             out.writeString(errorMessage);
