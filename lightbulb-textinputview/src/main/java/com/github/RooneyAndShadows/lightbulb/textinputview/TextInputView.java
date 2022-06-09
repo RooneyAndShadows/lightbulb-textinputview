@@ -495,7 +495,7 @@ public class TextInputView extends RelativeLayout {
             else
                 KeyboardUtils.hideKeyboard(editText);
         }));
-        editText.setInputType(inputType);
+
         setInputFilters(new InputFilter[]{});
         editText.setTextAlignment(inputTextAlignment);
         editText.setTextDirection(inputTextDirection);
@@ -503,6 +503,7 @@ public class TextInputView extends RelativeLayout {
         editText.setSingleLine(singleLine);
         editText.setMaxLines(maxLines);
         editText.setImeOptions(imeOptions);
+        editText.setInputType(inputType);
         editText.setTypeface(Typeface.DEFAULT);
         editText.removeTextChangedListener(textWatcher);
         editText.addTextChangedListener(textWatcher);
