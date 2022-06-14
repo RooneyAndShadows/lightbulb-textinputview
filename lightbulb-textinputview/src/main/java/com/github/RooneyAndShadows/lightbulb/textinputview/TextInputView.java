@@ -26,6 +26,7 @@ import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 
 import androidx.annotation.NonNull;
@@ -37,12 +38,11 @@ import androidx.databinding.InverseBindingListener;
 
 @SuppressWarnings({"unused", "UnusedReturnValue", "FieldCanBeLocal"})
 public class TextInputView extends RelativeLayout {
-
     private final TextInputLayout inputLayout;
     private final TextInputEditText editText;
     private final String inputLayoutTag = "inputLayout";
     private final String editTextTag = "editText";
-    private String text = "";
+    private String text;
     private String hintText;
     private String errorText;
     private String suffixText;
@@ -58,7 +58,7 @@ public class TextInputView extends RelativeLayout {
     private int maxLines;
     private int minLines;
     private int textSize;
-    private int maxCharacters;
+    private int maxCharactersCountLimit;
     private int boxStrokeWidth;
     private int inputTextAlignment;
     private int inputTextDirection;
@@ -68,12 +68,14 @@ public class TextInputView extends RelativeLayout {
     private boolean errorEnabled = false;
     private boolean enabled = true;
     private boolean endIconVisible = true;
+    private boolean characterCounterEnabled = false;
     private boolean validationEnabled;
     /*CALLBACKS*/
     private TextWatcher textWatcher;
     private OnFocusChangeListener focusChangeListener;
-    private final ArrayList<ValidationCallback> validationCallbacks = new ArrayList<>();
-    private final ArrayList<TextChangedCallback> textChangedListeners = new ArrayList<>();
+    private final List<ValidationCallback> validationCallbacks = new ArrayList<>();
+    private final List<TextChangedCallback> textChangedListeners = new ArrayList<>();
+    private final List<InputFilter> inputFilters = new ArrayList<>();
     /*ENUMS*/
     private ViewTypes textInputViewType;
 
@@ -90,8 +92,8 @@ public class TextInputView extends RelativeLayout {
             inflater.inflate(R.layout.view_text_input_boxed, this, true);
         if (textInputViewType.equals(ViewTypes.OUTLINED))
             inflater.inflate(R.layout.view_text_input_outlined, this, true);
-        inputLayout = this.findViewWithTag(inputLayoutTag);
-        editText = this.findViewWithTag(editTextTag);
+        inputLayout = findViewWithTag(inputLayoutTag);
+        editText = findViewWithTag(editTextTag);
         initView();
     }
 
@@ -118,11 +120,13 @@ public class TextInputView extends RelativeLayout {
             /*options*/
             validationEnabled = a.getBoolean(R.styleable.TextInputView_textInputValidationEnabled, false);
             singleLine = a.getBoolean(R.styleable.TextInputView_textInputIsSingleLine, true);
+            characterCounterEnabled = a.getBoolean(R.styleable.TextInputView_textInputCharacterCounterEnabled, false);
             textInputViewType = ViewTypes.valueOf(a.getInt(R.styleable.TextInputView_textInputViewType, 1));
             inputTextAlignment = a.getInteger(R.styleable.TextInputView_textInputAlignment, 0);
             inputTextDirection = a.getInteger(R.styleable.TextInputView_textInputDirection, 0);
             imeOptions = a.getInteger(R.styleable.TextInputView_textInputImeOptions, 0x00000000);
             maxLines = a.getInteger(R.styleable.TextInputView_textInputMaxLines, 1);
+            maxCharactersCountLimit = a.getInteger(R.styleable.TextInputView_textInputMaxCharacters, -1);
             minLines = a.getInteger(R.styleable.TextInputView_textInputMinLines, 1);
             textSize = a.getDimensionPixelSize(R.styleable.TextInputView_textInputTextSize, ResourceUtils.getDimenPxById(context, R.dimen.textInputView_text_size_default));
             boxStrokeWidth = a.getInteger(R.styleable.TextInputView_textInputBoxStrokeWidth, 1);
@@ -167,6 +171,19 @@ public class TextInputView extends RelativeLayout {
         validate();
     }
 
+    public void setText(String newVal) {
+        if (newVal == null)
+            newVal = "";
+        String oldValue = text;
+        text = newVal;
+        String editTextValue = editText.getText() == null ? "" : editText.getText().toString();
+        if (!editTextValue.equals(newVal))
+            editText.setText(newVal);
+        for (TextChangedCallback listener : textChangedListeners)
+            listener.onChanged(newVal, oldValue);
+        validate();
+    }
+
     public void setMaxLines(int maxLines) {
         this.maxLines = maxLines;
         editText.setMaxLines(maxLines);
@@ -187,6 +204,21 @@ public class TextInputView extends RelativeLayout {
         editText.setInputType(inputType);
     }
 
+    public void setAllowedCharacters(String allowedCharacters) {
+        this.allowedCharacters = allowedCharacters;
+        syncInputFilters();
+    }
+
+    public void setMaxCharactersCountLimit(int maxCharactersCountLimit) {
+        this.maxCharactersCountLimit = maxCharactersCountLimit;
+        syncInputFilters();
+    }
+
+    public void setCharacterCounterEnabled(boolean characterCounterEnabled) {
+        this.characterCounterEnabled = characterCounterEnabled;
+        inputLayout.setCounterEnabled(characterCounterEnabled);
+    }
+
     public void setError(String errorText) {
         if (!Objects.equals(this.errorText, errorText)) {
             this.errorText = errorText;
@@ -195,7 +227,8 @@ public class TextInputView extends RelativeLayout {
     }
 
     public void setInputFilters(InputFilter[] filters) {
-        ArrayList<InputFilter> filtersList = new ArrayList<>(Arrays.asList(filters));
+        inputFilters.clear();
+        inputFilters.addAll(Arrays.asList(filters));
         if (allowedCharacters != null) {
             InputFilter filter = (source, start, end, dest, dstart, dend) -> {
                 if (end > start) {
@@ -210,13 +243,11 @@ public class TextInputView extends RelativeLayout {
                 }
                 return null;
             };
-            filtersList.add(filter);
+            inputFilters.add(filter);
         }
-        InputFilter[] filtersArray = new InputFilter[filtersList.size()];
-        for (int i = 0; i < filtersList.size(); i++) {
-            filtersArray[i] = filtersList.get(i);
-        }
-        editText.setFilters(filtersArray);
+        if (maxCharactersCountLimit >= 0)
+            inputFilters.add(new InputFilter.LengthFilter(maxCharactersCountLimit));
+        syncInputFilters();
     }
 
     public void setStartIconColor(int color) {
@@ -248,7 +279,6 @@ public class TextInputView extends RelativeLayout {
                         ResourceUtils.getColorByAttribute(getContext(), R.attr.colorAccent),
                         startIconColor
                 }));
-        //inputLayout.setStartIconTintList(null);
     }
 
     public void setEndIconVisible(boolean newState) {
@@ -278,30 +308,16 @@ public class TextInputView extends RelativeLayout {
                         ResourceUtils.getColorByAttribute(getContext(), R.attr.colorAccent),
                         endIconColor
                 }));
-        //inputLayout.setEndIconTintList(null);
     }
 
     public void setHintText(String text) {
         hintText = text;
-        setupHint();
+        syncHintText();
     }
 
     public void setSuffixText(String text) {
         suffixText = text;
         inputLayout.setSuffixText(suffixText);
-    }
-
-    public void setText(String newVal) {
-        if (newVal == null)
-            newVal = "";
-        String oldValue = text;
-        text = newVal;
-        String editTextValue = editText.getText() == null ? "" : editText.getText().toString();
-        if (!editTextValue.equals(newVal))
-            editText.setText(newVal);
-        for (TextChangedCallback listener : textChangedListeners)
-            listener.onChanged(newVal, oldValue);
-        validate();
     }
 
     public boolean isValidationEnabled() {
@@ -432,6 +448,9 @@ public class TextInputView extends RelativeLayout {
     private void initInputLayout() {
         if (textInputViewType.equals(ViewTypes.BOXED))
             inputLayout.setBoxBackgroundColor(inputBackgroundColor);
+        inputLayout.setCounterEnabled(characterCounterEnabled);
+        if (maxCharactersCountLimit >= 0 && characterCounterEnabled)
+            inputLayout.setCounterMaxLength(maxCharactersCountLimit);
         inputLayout.setSuffixText(suffixText);
         inputLayout.setHintTextAppearance(hintAppearance);
         inputLayout.setErrorTextAppearance(errorAppearance);
@@ -465,7 +484,7 @@ public class TextInputView extends RelativeLayout {
             setStartIcon(startIcon);
         if (endIcon != null)
             setEndIcon(endIcon);
-        setupHint();
+        syncHintText();
     }
 
     private void initEditText() {
@@ -514,7 +533,15 @@ public class TextInputView extends RelativeLayout {
         setText(text);
     }
 
-    private void setupHint() {
+    private void syncInputFilters() {
+        InputFilter[] filtersArray = new InputFilter[inputFilters.size()];
+        for (int i = 0; i < inputFilters.size(); i++) {
+            filtersArray[i] = inputFilters.get(i);
+        }
+        editText.setFilters(filtersArray);
+    }
+
+    private void syncHintText() {
         boolean hasHint = !StringUtils.isNullOrEmptyString(hintText);
         inputLayout.setHintEnabled(hasHint);
         inputLayout.setHint(hintText);
@@ -589,8 +616,10 @@ public class TextInputView extends RelativeLayout {
         myState.enabled = isEnabled();
         myState.suffixText = suffixText;
         myState.inputType = inputType;
-        myState.maxLines = maxLines;
         myState.minLines = minLines;
+        myState.maxLines = maxLines;
+        myState.characterCounterEnabled = characterCounterEnabled;
+        myState.maxCharacters = maxCharactersCountLimit;
         myState.startIconColor = startIconColor;
         myState.editTextFocused = hasFocus();
         myState.errorMessage = errorText;
@@ -616,6 +645,8 @@ public class TextInputView extends RelativeLayout {
         inputType = savedState.inputType;
         minLines = savedState.minLines;
         maxLines = savedState.maxLines;
+        characterCounterEnabled = savedState.characterCounterEnabled;
+        maxCharactersCountLimit = savedState.maxCharacters;
         errorEnabled = savedState.errorEnabled;
         validationEnabled = savedState.validationEnabled;
         singleLine = savedState.singleLine;
@@ -640,11 +671,13 @@ public class TextInputView extends RelativeLayout {
         private boolean editTextFocused;
         private boolean endIconVisible;
         private boolean singleLine;
+        private boolean characterCounterEnabled;
         private int errorAppearance;
         private int startIconColor;
         private int inputType;
         private int minLines;
         private int maxLines;
+        private int maxCharacters;
         private String errorMessage;
         private String allowedCharacters;
         private String text;
@@ -664,9 +697,11 @@ public class TextInputView extends RelativeLayout {
             editTextFocused = in.readByte() != 0;
             endIconVisible = in.readByte() != 0;
             singleLine = in.readByte() != 0;
+            characterCounterEnabled = in.readByte() != 0;
             inputType = in.readInt();
             minLines = in.readInt();
             maxLines = in.readInt();
+            maxCharacters = in.readInt();
             startIconColor = in.readInt();
             errorAppearance = in.readInt();
             errorMessage = in.readString();
@@ -686,9 +721,11 @@ public class TextInputView extends RelativeLayout {
             out.writeByte((byte) (editTextFocused ? 1 : 0));
             out.writeByte((byte) (endIconVisible ? 1 : 0));
             out.writeByte((byte) (singleLine ? 1 : 0));
+            out.writeByte((byte) (characterCounterEnabled ? 1 : 0));
             out.writeInt(inputType);
             out.writeInt(minLines);
             out.writeInt(maxLines);
+            out.writeInt(maxCharacters);
             out.writeInt(startIconColor);
             out.writeInt(errorAppearance);
             out.writeString(errorMessage);

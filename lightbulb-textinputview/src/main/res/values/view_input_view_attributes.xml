@@ -18,8 +18,6 @@
         <attr name="textInputHintAppearance" format="reference" />
         <attr name="textInputBackgroundColor" format="color" />
         <attr name="textInputBoxStrokeColor" format="color" />
-        <attr name="textInputBoxStrokeWidth" format="integer" />
-        <attr name="textInputCharLimit" format="integer" />
         <attr name="textInputTextSize" format="dimension" />
         <attr name="textInputStartIcon" format="reference" />
         <attr name="textInputStartIconColor" format="reference" />
@@ -29,9 +27,12 @@
         <attr name="textInputText" format="string" />
         <attr name="textInputAllowedCharacters" format="string" />
         <attr name="textInputError" format="string" />
+        <attr name="textInputMaxCharacters" format="integer" />
         <attr name="textInputMaxLines" format="integer" />
         <attr name="textInputMinLines" format="integer" />
+        <attr name="textInputBoxStrokeWidth" format="integer" />
         <attr name="textInputIsSingleLine" format="boolean" />
+        <attr name="textInputCharacterCounterEnabled" format="boolean" />
         <attr name="textInputValidationEnabled" format="boolean" />
         <attr name="textInputViewType" format="enum">
             <enum name="boxed" value="1" />
