@@ -216,7 +216,7 @@ public class TextInputView extends RelativeLayout {
 
     public void setCharacterCounterEnabled(boolean characterCounterEnabled) {
         this.characterCounterEnabled = characterCounterEnabled;
-        inputLayout.setCounterEnabled(characterCounterEnabled);
+        syncCharactersCounter();
     }
 
     public void setError(String errorText) {
@@ -430,9 +430,6 @@ public class TextInputView extends RelativeLayout {
     private void initInputLayout() {
         if (textInputViewType.equals(ViewTypes.BOXED))
             inputLayout.setBoxBackgroundColor(inputBackgroundColor);
-        inputLayout.setCounterEnabled(characterCounterEnabled);
-        if (maxCharactersCountLimit >= 0 && characterCounterEnabled)
-            inputLayout.setCounterMaxLength(maxCharactersCountLimit);
         inputLayout.setSuffixText(suffixText);
         inputLayout.setHintTextAppearance(hintAppearance);
         inputLayout.setErrorTextAppearance(errorAppearance);
@@ -466,6 +463,7 @@ public class TextInputView extends RelativeLayout {
             setStartIcon(startIcon);
         if (endIcon != null)
             setEndIcon(endIcon);
+        syncCharactersCounter();
         syncHintText();
     }
 
@@ -545,6 +543,12 @@ public class TextInputView extends RelativeLayout {
         inputLayout.setHintEnabled(hasHint);
         inputLayout.setHint(hintText);
         editText.setHint(null);
+    }
+
+    private void syncCharactersCounter() {
+        inputLayout.setCounterEnabled(characterCounterEnabled);
+        if (maxCharactersCountLimit >= 0 && characterCounterEnabled)
+            inputLayout.setCounterMaxLength(maxCharactersCountLimit);
     }
 
     private enum ViewTypes {
