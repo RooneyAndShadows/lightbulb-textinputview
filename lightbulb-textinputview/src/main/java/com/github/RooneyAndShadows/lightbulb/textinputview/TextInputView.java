@@ -226,27 +226,9 @@ public class TextInputView extends RelativeLayout {
         }
     }
 
-    public void setInputFilters(InputFilter[] filters) {
+    public void setInputFilters(List<InputFilter> filters) {
         inputFilters.clear();
-        inputFilters.addAll(Arrays.asList(filters));
-        if (allowedCharacters != null) {
-            InputFilter filter = (source, start, end, dest, dstart, dend) -> {
-                if (end > start) {
-                    String filteredVal = "";
-                    char[] acceptedChars = allowedCharacters.toCharArray();
-                    for (int index = start; index < end; index++) {
-                        String currentChar = String.valueOf(source.charAt(index));
-                        if (new String(acceptedChars).contains(currentChar))
-                            filteredVal = filteredVal.concat(currentChar);
-                    }
-                    return filteredVal;
-                }
-                return null;
-            };
-            inputFilters.add(filter);
-        }
-        if (maxCharactersCountLimit >= 0)
-            inputFilters.add(new InputFilter.LengthFilter(maxCharactersCountLimit));
+        inputFilters.addAll(filters);
         syncInputFilters();
     }
 
@@ -514,8 +496,7 @@ public class TextInputView extends RelativeLayout {
             else
                 KeyboardUtils.hideKeyboard(editText);
         }));
-
-        setInputFilters(new InputFilter[]{});
+        setInputFilters(new ArrayList<>());
         editText.setTextAlignment(inputTextAlignment);
         editText.setTextDirection(inputTextDirection);
         editText.setMinLines(minLines);
@@ -534,6 +515,24 @@ public class TextInputView extends RelativeLayout {
     }
 
     private void syncInputFilters() {
+        if (allowedCharacters != null) {
+            InputFilter filter = (source, start, end, dest, dstart, dend) -> {
+                if (end > start) {
+                    String filteredVal = "";
+                    char[] acceptedChars = allowedCharacters.toCharArray();
+                    for (int index = start; index < end; index++) {
+                        String currentChar = String.valueOf(source.charAt(index));
+                        if (new String(acceptedChars).contains(currentChar))
+                            filteredVal = filteredVal.concat(currentChar);
+                    }
+                    return filteredVal;
+                }
+                return null;
+            };
+            inputFilters.add(filter);
+        }
+        if (maxCharactersCountLimit >= 0)
+            inputFilters.add(new InputFilter.LengthFilter(maxCharactersCountLimit));
         InputFilter[] filtersArray = new InputFilter[inputFilters.size()];
         for (int i = 0; i < inputFilters.size(); i++) {
             filtersArray[i] = inputFilters.get(i);
