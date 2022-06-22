@@ -247,6 +247,21 @@ public class TextInputView extends RelativeLayout {
                 }));
     }
 
+    public void setEndIconColor(int color) {
+        endIconColor = color;
+        inputLayout.setEndIconTintList(new ColorStateList(
+                new int[][]{
+                        new int[]{android.R.attr.state_focused}, // focused
+                        new int[]{android.R.attr.state_hovered}, // hovered
+                        new int[]{}  //
+                },
+                new int[]{
+                        ResourceUtils.getColorByAttribute(getContext(), R.attr.colorAccent),
+                        ResourceUtils.getColorByAttribute(getContext(), R.attr.colorAccent),
+                        endIconColor
+                }));
+    }
+
     public void setStartIcon(Drawable drawable) {
         startIcon = drawable;
         inputLayout.setStartIconDrawable(startIcon);
@@ -274,8 +289,7 @@ public class TextInputView extends RelativeLayout {
 
     public void setEndIcon(Drawable drawable, OnClickListener onClickListener) {
         endIcon = drawable;
-        if (onClickListener != null)
-            inputLayout.setEndIconMode(TextInputLayout.END_ICON_CUSTOM);
+        inputLayout.setEndIconMode(TextInputLayout.END_ICON_CUSTOM);
         inputLayout.setEndIconOnClickListener(onClickListener);
         inputLayout.setEndIconDrawable(endIcon);
         inputLayout.setEndIconVisible(endIconVisible);
@@ -290,6 +304,7 @@ public class TextInputView extends RelativeLayout {
                         ResourceUtils.getColorByAttribute(getContext(), R.attr.colorAccent),
                         endIconColor
                 }));
+        findViewById(R.id.text_input_end_icon).setClickable(!(onClickListener == null));
     }
 
     public void setHintText(String text) {
