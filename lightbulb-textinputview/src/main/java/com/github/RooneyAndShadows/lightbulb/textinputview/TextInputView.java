@@ -84,7 +84,15 @@ public class TextInputView extends RelativeLayout {
     }
 
     public TextInputView(@NonNull Context context, @Nullable AttributeSet attrs) {
-        super(context, attrs);
+        this(context, attrs, 0, 0);
+    }
+
+    public TextInputView(Context context, AttributeSet attrs, int defStyleAttr) {
+        this(context, attrs, defStyleAttr, 0);
+    }
+
+    public TextInputView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+        super(context, attrs, defStyleAttr, defStyleRes);
         setSaveEnabled(true);
         readAttributes(context, attrs);
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -121,6 +129,7 @@ public class TextInputView extends RelativeLayout {
             validationEnabled = a.getBoolean(R.styleable.TextInputView_textInputValidationEnabled, false);
             singleLine = a.getBoolean(R.styleable.TextInputView_textInputIsSingleLine, true);
             characterCounterEnabled = a.getBoolean(R.styleable.TextInputView_textInputCharacterCounterEnabled, false);
+            enabled = a.getBoolean(R.styleable.TextInputView_android_enabled, enabled);
             textInputViewType = ViewTypes.valueOf(a.getInt(R.styleable.TextInputView_textInputViewType, 1));
             inputTextAlignment = a.getInteger(R.styleable.TextInputView_textInputAlignment, 0);
             inputTextDirection = a.getInteger(R.styleable.TextInputView_textInputDirection, 0);

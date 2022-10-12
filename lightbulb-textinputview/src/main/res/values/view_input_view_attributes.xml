@@ -13,6 +13,7 @@
     </style>
 
     <declare-styleable name="TextInputView">
+        <attr name="android:enabled" />
         <attr name="textInputHintText" format="string" />
         <attr name="textInputErrorAppearance" format="reference" />
         <attr name="textInputHintAppearance" format="reference" />
