@@ -1,45 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-    <dimen name="textInputView_text_size_default">16sp</dimen>
-
-    <style name="InputView.errorTextAppearance" parent="@android:style/TextAppearance.Medium">
-        <item name="android:textSize">14sp</item>
-        <item name="android:textColor">?attr/colorError</item>
-    </style>
-
-    <style name="InputView.hintTextAppearance" parent="@android:style/TextAppearance.Small">
-        <item name="android:textSize">14sp</item>
-    </style>
-
     <declare-styleable name="TextInputView">
         <attr name="android:enabled" />
-        <attr name="textInputHintText" format="string" />
-        <attr name="textInputErrorAppearance" format="reference" />
-        <attr name="textInputHintAppearance" format="reference" />
-        <attr name="textInputBackgroundColor" format="color" />
-        <attr name="textInputBoxStrokeColor" format="color" />
-        <attr name="textInputTextSize" format="dimension" />
-        <attr name="textInputStartIcon" format="reference" />
-        <attr name="textInputStartIconColor" format="reference" />
-        <attr name="textInputEndIcon" format="reference" />
-        <attr name="textInputEndIconColor" format="reference" />
-        <attr name="textInputSuffixText" format="string" />
-        <attr name="textInputText" format="string" />
-        <attr name="textInputAllowedCharacters" format="string" />
-        <attr name="textInputError" format="string" />
-        <attr name="textInputMaxCharacters" format="integer" />
-        <attr name="textInputMaxLines" format="integer" />
-        <attr name="textInputMinLines" format="integer" />
-        <attr name="textInputBoxStrokeWidth" format="integer" />
-        <attr name="textInputIsSingleLine" format="boolean" />
-        <attr name="textInputCharacterCounterEnabled" format="boolean" />
-        <attr name="textInputValidationEnabled" format="boolean" />
-        <attr name="textInputViewType" format="enum">
+        <attr name="tiv_hintText" format="string" />
+        <attr name="tiv_errorTextAppearance" format="reference" />
+        <attr name="tiv_hintTextAppearance" format="reference" />
+        <attr name="tiv_boxStrokeColor" format="color|reference" />
+        <!--<attr name="tiv_textSize" format="dimension" />-->
+        <attr name="tiv_startIcon" format="reference" />
+        <attr name="tiv_startIconColor" format="color|reference" />
+        <attr name="tiv_endIcon" format="reference" />
+        <attr name="tiv_endIconColor" format="color|reference" />
+        <attr name="tiv_suffixText" format="string" />
+        <attr name="tiv_text" format="string" />
+        <attr name="tiv_allowedCharacters" format="string" />
+        <attr name="tiv_errorText" format="string" />
+        <attr name="tiv_maxCharacters" format="integer" />
+        <attr name="tiv_maxLines" format="integer" />
+        <attr name="tiv_minLines" format="integer" />
+        <attr name="tiv_boxStrokeWidth" format="integer" />
+        <attr name="tiv_isSingleLine" format="boolean" />
+        <attr name="tiv_characterCounterEnabled" format="boolean" />
+        <attr name="tiv_validationEnabled" format="boolean" />
+        <attr name="tiv_viewType" format="enum">
             <enum name="boxed" value="1" />
             <enum name="outlined" value="2" />
         </attr>
-        <attr name="textInputDirection" format="integer">
+        <attr name="tiv_inputDirection" format="integer">
             <enum name="inherit" value="0" />
             <enum name="firstStrong" value="1" />
             <enum name="anyRtl" value="2" />
@@ -50,7 +37,7 @@
             <enum name="firstStrongRtl" value="7" />
         </attr>
 
-        <attr name="textInputAlignment" format="integer">
+        <attr name="tiv_inputAlignment" format="integer">
             <enum name="inherit" value="0" />
             <enum name="gravity" value="1" />
             <enum name="textStart" value="2" />
@@ -59,7 +46,7 @@
             <enum name="viewStart" value="5" />
             <enum name="viewEnd" value="6" />
         </attr>
-        <attr name="textInputType">
+        <attr name="tiv_inputType">
             <flag name="none" value="0x00000000" />
             <flag name="text" value="0x00000001" />
             <flag name="textCapCharacters" value="0x00001001" />
@@ -93,7 +80,7 @@
             <flag name="date" value="0x00000014" />
             <flag name="time" value="0x00000024" />
         </attr>
-        <attr name="textInputImeOptions">
+        <attr name="tiv_imeOptions">
             <flag name="normal" value="0x00000000" />
             <flag name="actionUnspecified" value="0x00000000" />
             <flag name="actionNone" value="0x00000001" />
@@ -115,21 +102,11 @@
     </declare-styleable>
 
     <style name="InputViewOutlined" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
-        <item name="boxStrokeWidth">1dp</item>
-        <item name="startIconTint">?android:attr/colorPrimary</item>
-        <item name="errorIconTint">?colorError</item>
-        <item name="errorTextAppearance">@style/InputView.errorTextAppearance</item>
-        <item name="hintTextAppearance">@style/InputView.hintTextAppearance</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
     </style>
 
     <style name="InputViewBoxed" parent="Widget.MaterialComponents.TextInputLayout.FilledBox.Dense">
-        <item name="boxStrokeWidth">1dp</item>
-        <item name="startIconTint">?android:attr/colorPrimary</item>
-        <item name="errorIconTint">?colorError</item>
-        <item name="errorTextAppearance">@style/InputView.errorTextAppearance</item>
-        <item name="hintTextAppearance">@style/InputView.hintTextAppearance</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
     </style>

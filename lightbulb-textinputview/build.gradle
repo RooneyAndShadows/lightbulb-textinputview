@@ -1,19 +1,22 @@
-apply plugin: 'com.android.library'
-apply plugin: 'maven-publish'
-
+plugins {
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.kotlin.android)
+    id("org.jetbrains.kotlin.kapt")
+    id("maven-publish")
+}
 
 android {
-    compileSdkVersion 31
+    namespace 'com.github.rooneyandshadows.lightbulb.textinputview'
+    compileSdk 34
     defaultConfig {
-        minSdkVersion 24
-        targetSdkVersion 31
-        versionCode 1011
+        minSdk 24
         versionName "1.0.11"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
     }
     buildFeatures {
         dataBinding true
+        viewBinding true
     }
     buildTypes {
         release {
@@ -22,19 +25,21 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+    publishing {
+        singleVariant("release") {
+            withSourcesJar()
+        }
     }
 }
 
-tasks.withType(JavaCompile) {
-    options.compilerArgs << "-Xlint:unchecked"
-    options.deprecation = true
-}
-
-task sourceJar(type: Jar) {
-    from android.sourceSets.main.java.srcDirs
-    classifier "sources"
+dependencies {
+    implementation libs.androidx.core.ktx
+    implementation libs.androidx.appcompat
+    implementation libs.material
+    implementation libs.lightbulb.commons
 }
 
 afterEvaluate {
@@ -51,12 +56,4 @@ afterEvaluate {
             }
         }
     }
-}
-
-dependencies {
-    implementation fileTree(dir: "libs", include: ["*.jar"])
-    implementation "androidx.appcompat:appcompat:$versions.android_appcompat"
-    implementation "com.google.android.material:material:$versions.material"
-    implementation "com.github.rooneyandshadows:lightbulb-commons:$versions.lightbulb.commons"
-    implementation "com.github.rooneyandshadows:java-commons:$versions.java.commons"
 }

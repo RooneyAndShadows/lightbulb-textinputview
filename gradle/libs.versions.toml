@@ -1,0 +1,27 @@
+[versions]
+agp = "8.6.1"
+kotlin = "1.9.0"
+coreKtx = "1.13.1"
+appcompat = "1.7.1"
+material = "1.13.0"
+lbApt = "2.0.0-RC7"
+lbApplication = "[1.6.0,1.7.0["
+lbCommons = "1.0.6"
+constraintlayout = "2.2.1"
+
+[libraries]
+androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
+lightbulb-application = { group = "com.github.rooneyandshadows", name = "lightbulb-application", version.ref = "lbApplication" }
+lightbulb-commons = { group = "com.github.rooneyandshadows", name = "lightbulb-commons", version.ref = "lbCommons" }
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "agp" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
+android-library = { id = "com.android.library", version.ref = "agp" }
+maven-publish = { id = "maven-publish" }
+lightbulb-apt = { id = "com.github.rooneyandshadows.lightbulb-apt", version.ref = "lbApt" }
+
