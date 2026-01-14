@@ -1,6 +1,8 @@
 package com.rooneyandshadows.lightbulb.textinputviewdemo
 
+import android.app.Activity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import com.github.rooneyandshadows.lightbulb.application.activity.BaseActivity
 import com.github.rooneyandshadows.lightbulb.apt.annotations.LightbulbActivity
 import com.github.rooneyandshadows.lightbulb.textinputviewdemo.lightbulb.service.LightbulbService
@@ -14,8 +16,8 @@ class MainActivity : BaseActivity() {
         }
     }
 
-    override fun onUnhandledException(paramThread: Thread?, exception: Throwable) {
-        super.onUnhandledException(paramThread, exception)
-        exception.printStackTrace()
-    }
+    //override fun onUnhandledException(paramThread: Thread?, exception: Throwable) {
+    //    super.onUnhandledException(paramThread, exception)
+    //    exception.printStackTrace()
+    //}
 }

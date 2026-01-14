@@ -34,6 +34,5 @@ class HomeFragment : BaseFragment() {
         super.onViewCreated(fragmentView, savedInstanceState)
         viewBinding.vm = viewModel
 
-
     }
 }

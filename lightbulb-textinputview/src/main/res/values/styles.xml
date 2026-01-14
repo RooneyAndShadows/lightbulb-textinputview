@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="InputViewOutlined" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="InputViewBoxed" parent="Widget.MaterialComponents.TextInputLayout.FilledBox.Dense">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="InputView" />
+
+    <style name="InputView.editText" parent="ThemeOverlay.MaterialComponents.TextInputEditText">
+        <item name="android:imeOptions">flagNoExtractUi</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">match_parent</item>
+    </style>
+
+    <style name="Lightbulb.TextInputView" parent="">
+        <item name="tiv_viewType">boxed</item>
+    </style>
+
+    <style name="Lightbulb.TextInputView.Boxed">
+        <item name="tiv_viewType">boxed</item>
+    </style>
+
+    <style name="Lightbulb.TextInputView.Outlined">
+        <item name="tiv_viewType">outlined</item>
+    </style>
+</resources>

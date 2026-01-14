@@ -8,7 +8,6 @@ class HomeVM : ObservableViewModel() {
     @get:Bindable
     var text: String = "asfasfsf"
         set(value) {
-           println(value)
             if (text != value) {
                 field = value
                 notifyPropertyChanged(BR.text)

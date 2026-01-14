@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <declare-styleable name="TextInputViewTheme">
+        <attr name="textInputViewStyle" format="reference" />
+    </declare-styleable>
+
     <declare-styleable name="TextInputView">
         <attr name="android:enabled" />
         <attr name="tiv_hintText" format="string" />
         <attr name="tiv_errorTextAppearance" format="reference" />
         <attr name="tiv_hintTextAppearance" format="reference" />
         <attr name="tiv_boxStrokeColor" format="color|reference" />
-        <!--<attr name="tiv_textSize" format="dimension" />-->
         <attr name="tiv_startIcon" format="reference" />
         <attr name="tiv_startIconColor" format="color|reference" />
         <attr name="tiv_endIcon" format="reference" />
@@ -19,7 +22,6 @@
         <attr name="tiv_maxLines" format="integer" />
         <attr name="tiv_minLines" format="integer" />
         <attr name="tiv_boxStrokeWidth" format="integer" />
-        <attr name="tiv_isSingleLine" format="boolean" />
         <attr name="tiv_characterCounterEnabled" format="boolean" />
         <attr name="tiv_validationEnabled" format="boolean" />
         <attr name="tiv_viewType" format="enum">
@@ -100,24 +102,4 @@
             <flag name="flagForceAscii" value="0x80000000" />
         </attr>
     </declare-styleable>
-
-    <style name="InputViewOutlined" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-    </style>
-
-    <style name="InputViewBoxed" parent="Widget.MaterialComponents.TextInputLayout.FilledBox.Dense">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-    </style>
-
-    <style name="InputView" />
-
-    <style name="InputView.editText" parent="ThemeOverlay.MaterialComponents.TextInputEditText">
-        <item name="android:inputType">textVisiblePassword</item>
-        <item name="android:imeOptions">flagNoExtractUi</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_width">match_parent</item>
-    </style>
-
 </resources>
