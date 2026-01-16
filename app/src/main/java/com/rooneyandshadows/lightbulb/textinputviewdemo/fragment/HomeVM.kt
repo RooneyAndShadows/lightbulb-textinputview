@@ -6,7 +6,7 @@ import com.github.rooneyandshadows.lightbulb.textinputviewdemo.BR
 
 class HomeVM : ObservableViewModel() {
     @get:Bindable
-    var text: String = "asfasfsf"
+    var text: String = "initialText"
         set(value) {
             if (text != value) {
                 field = value

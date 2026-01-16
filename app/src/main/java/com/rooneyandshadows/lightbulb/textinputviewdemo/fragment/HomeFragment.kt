@@ -23,8 +23,6 @@ class HomeFragment : BaseFragment() {
     @Override
     override fun configureActionBar(): ActionBarConfiguration {
         return ActionBarConfiguration(R.id.toolbar)
-            .withActionButtons(true)
-            .attachToDrawer(false)
             .withSubTitle("Sfasf")
             .withTitle("ASfasfasf")
     }

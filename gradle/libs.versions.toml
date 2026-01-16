@@ -1,12 +1,12 @@
 [versions]
-agp = "8.6.1"
-kotlin = "1.9.0"
-coreKtx = "1.13.1"
+agp = "8.13.2"
+kotlin = "2.3.0"
+coreKtx = "1.17.0"
 appcompat = "1.7.1"
 material = "1.13.0"
-lbApt = "2.0.0-RC7"
-lbApplication = "[1.6.0,1.7.0["
-lbCommons = "1.0.6"
+lbApt = "2.0.0"
+lbApplication = "[1.7.0,1.8.0["
+lbCommons = "1.3.0"
 constraintlayout = "2.2.1"
 
 [libraries]

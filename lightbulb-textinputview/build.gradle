@@ -7,7 +7,7 @@ plugins {
 
 android {
     namespace 'com.github.rooneyandshadows.lightbulb.textinputview'
-    compileSdk 34
+    compileSdk = 36
     defaultConfig {
         minSdk 24
         versionName "1.1.0"
@@ -28,6 +28,8 @@ android {
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
     }
+
+
     publishing {
         singleVariant("release") {
             withSourcesJar()
@@ -40,6 +42,7 @@ dependencies {
     implementation libs.androidx.appcompat
     implementation libs.material
     implementation libs.lightbulb.commons
+    implementation libs.androidx.constraintlayout
 }
 
 afterEvaluate {

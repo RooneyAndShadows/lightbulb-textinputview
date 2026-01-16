@@ -23,8 +23,7 @@ import androidx.annotation.StyleRes
 import androidx.databinding.BindingAdapter
 import androidx.databinding.InverseBindingAdapter
 import androidx.databinding.InverseBindingListener
-import com.github.rooneyandshadows.lightbulb.commons.utils.ParcelableUtils
-import com.github.rooneyandshadows.lightbulb.commons.utils.ResourceUtils
+import com.github.rooneyandshadows.lightbulb.commons.utils.ParcelUtils
 import com.github.rooneyandshadows.lightbulb.textinputview.TextInputView.ViewTypes.BOXED
 import com.github.rooneyandshadows.lightbulb.textinputview.TextInputView.ViewTypes.OUTLINED
 import com.google.android.material.textfield.TextInputEditText
@@ -124,11 +123,12 @@ class TextInputView @JvmOverloads constructor(
 
     fun setBoxStrokeWidth(width: Int) {
         var newWidth = width
-        if (newWidth <= 0) {
-            newWidth = 1
+        if (newWidth < 0) {
+            newWidth = 0
         }
 
-        inputLayout.boxStrokeWidth = ResourceUtils.dpToPx(newWidth)
+        inputLayout.boxStrokeWidthFocused = newWidth
+        inputLayout.boxStrokeWidth = newWidth
     }
 
     fun getBoxStrokeWidth(): Int {
@@ -358,18 +358,18 @@ class TextInputView @JvmOverloads constructor(
         constructor(superState: Parcelable?) : super(superState)
 
         private constructor(inputState: Parcel) : super(inputState) {
-            allowedCharacters = ParcelableUtils.readString(inputState) ?: ""
-            maxCharactersCountLimit = ParcelableUtils.readInt(inputState) ?: 0
-            validationEnabled = ParcelableUtils.readBoolean(inputState) ?: false
+            allowedCharacters = ParcelUtils.readString(inputState) ?: ""
+            maxCharactersCountLimit = ParcelUtils.readInt(inputState) ?: 0
+            validationEnabled = ParcelUtils.readBoolean(inputState) ?: false
             editTextState = inputState.readParcelable(javaClass.classLoader)
             inputLayoutState = inputState.readSparseArray(javaClass.classLoader)
         }
 
         override fun writeToParcel(out: Parcel, flags: Int) {
             super.writeToParcel(out, flags)
-            ParcelableUtils.writeString(out, allowedCharacters)
-            ParcelableUtils.writeInt(out, maxCharactersCountLimit)
-            ParcelableUtils.writeBoolean(out, validationEnabled)
+            ParcelUtils.writeString(out, allowedCharacters)
+            ParcelUtils.writeInt(out, maxCharactersCountLimit)
+            ParcelUtils.writeBoolean(out, validationEnabled)
 
             out.writeParcelable(editTextState, flags)
             out.writeSparseArray(inputLayoutState)
@@ -405,7 +405,7 @@ class TextInputView @JvmOverloads constructor(
         var maxCharacters: Int = 0,
         var maxLines: Int = -1,
         var minLines: Int = -1,
-        var boxStrokeWidth: Int = 0,
+        var boxStrokeWidth: Int = -1,
         var characterCounterEnabled: Boolean = false,
         var validationEnabled: Boolean = false,
         var viewType: ViewTypes = BOXED,
@@ -469,10 +469,10 @@ class TextInputView @JvmOverloads constructor(
                 maxCharactersCountLimit =
                     a.getInteger(R.styleable.TextInputView_tiv_maxCharacters, 0)
                 minLines = a.getInteger(R.styleable.TextInputView_tiv_minLines, 1)
-                boxStrokeWidth = a.getInteger(R.styleable.TextInputView_tiv_boxStrokeWidth, 1)
-                if (boxStrokeWidth < 0) {
-                    boxStrokeWidth = 0
-                }
+                boxStrokeWidth = a.getDimensionPixelSize(
+                    R.styleable.TextInputView_tiv_boxStrokeWidth,
+                    -1
+                )
                 inputType = a.getInteger(
                     R.styleable.TextInputView_tiv_inputType,
                     InputType.TYPE_CLASS_TEXT
@@ -516,12 +516,14 @@ class TextInputView @JvmOverloads constructor(
             endIconColor?.apply {
                 setEndIconColor(this)
             }
-            setBoxStrokeWidth(boxStrokeWidth)
+            if (boxStrokeWidth != -1) {
+                setBoxStrokeWidth(boxStrokeWidth)
+            }
             setCharacterCounterEnabled(characterCounterEnabled)
             setErrorText(errorText)
             setHintText(hintText)
             setSuffixText(suffixText)
-            inputLayout.isHintAnimationEnabled = false
+            //inputLayout.isHintAnimationEnabled = false
         }
     }
 

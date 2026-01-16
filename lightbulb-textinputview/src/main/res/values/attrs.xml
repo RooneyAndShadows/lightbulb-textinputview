@@ -21,7 +21,7 @@
         <attr name="tiv_maxCharacters" format="integer" />
         <attr name="tiv_maxLines" format="integer" />
         <attr name="tiv_minLines" format="integer" />
-        <attr name="tiv_boxStrokeWidth" format="integer" />
+        <attr name="tiv_boxStrokeWidth" format="dimension" />
         <attr name="tiv_characterCounterEnabled" format="boolean" />
         <attr name="tiv_validationEnabled" format="boolean" />
         <attr name="tiv_viewType" format="enum">
