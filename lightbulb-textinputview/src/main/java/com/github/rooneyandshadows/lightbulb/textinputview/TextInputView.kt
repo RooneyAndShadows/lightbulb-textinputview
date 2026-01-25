@@ -325,8 +325,8 @@ class TextInputView @JvmOverloads constructor(
         companion object {
             @JvmStatic
             @BindingAdapter("tiv_text")
-            fun setText(view: TextInputView, newText: String) {
-                view.setText(newText)
+            fun setText(view: TextInputView, newText: String?) {
+                view.setText(newText ?: "")
             }
 
             @JvmStatic
@@ -617,6 +617,8 @@ class TextInputView @JvmOverloads constructor(
                     bindingListener?.apply {
                         onChanged(newVal, oldValue)
                     }
+
+                    validate()
                 }
             }
 
