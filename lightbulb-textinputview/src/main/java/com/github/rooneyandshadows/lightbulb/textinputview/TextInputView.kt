@@ -45,6 +45,7 @@ class TextInputView @JvmOverloads constructor(
     }
     private var allowedCharacters: String = ""
     private var maxCharactersCountLimit: Int = 0
+    private var editable: Boolean = false
     private var validationEnabled: Boolean = false
     private var bindingListener: TextChangedCallback? = null
     private val inputFilters: MutableList<InputFilter> = mutableListOf()
@@ -146,6 +147,10 @@ class TextInputView @JvmOverloads constructor(
         inputLayout.setStartIconTintList(iconColor)
     }
 
+    fun setStartIconClickListener(listener: OnClickListener?) {
+        inputLayout.setStartIconOnClickListener(listener)
+    }
+
     fun setEndIcon(icon: Drawable?) {
         icon?.apply {
             inputLayout.isEndIconVisible = true
@@ -155,6 +160,10 @@ class TextInputView @JvmOverloads constructor(
 
     fun setEndIconColor(iconColor: ColorStateList) {
         inputLayout.setEndIconTintList(iconColor)
+    }
+
+    fun setEndIconClickListener(listener: OnClickListener?) {
+        inputLayout.setEndIconOnClickListener(listener)
     }
 
     fun setErrorText(errorText: String) {
@@ -192,6 +201,21 @@ class TextInputView @JvmOverloads constructor(
 
     fun getMinLines(): Int {
         return editText.minLines
+    }
+
+    fun setIsEditable(isEditable: Boolean) {
+        editable = isEditable
+        editText.showSoftInputOnFocus = isEditable
+        editText.isCursorVisible = isEditable
+        editText.isFocusable = isEditable
+        editText.isFocusableInTouchMode = isEditable
+        inputLayout.isFocusable = isEditable
+        inputLayout.isFocusableInTouchMode = isEditable
+        editText.isClickable = true
+    }
+
+    fun isEditable(): Boolean {
+        return editable
     }
 
     fun setCharacterCounterEnabled(enabled: Boolean) {
@@ -283,6 +307,15 @@ class TextInputView @JvmOverloads constructor(
 
     fun removeTextChangedCallback(textChangedCallback: TextChangedCallback) {
         textChangedListeners.remove(textChangedCallback)
+    }
+
+    override fun setFocusable(focusable: Boolean) {
+        super.setFocusable(focusable)
+        inputLayout.isFocusable = focusable
+        inputLayout.isFocusableInTouchMode = focusable
+
+        editText.isFocusable = focusable
+        editText.isFocusableInTouchMode = focusable
     }
 
     override fun setEnabled(enabled: Boolean) {
@@ -392,6 +425,7 @@ class TextInputView @JvmOverloads constructor(
 
     private data class TextInputViewAttributes(
         var enabled: Boolean = true,
+        var focusable: Boolean = true,
         var hintText: String = "",
         var suffixText: String = "",
         var text: String = "",
@@ -406,6 +440,7 @@ class TextInputView @JvmOverloads constructor(
         var maxLines: Int = -1,
         var minLines: Int = -1,
         var boxStrokeWidth: Int = -1,
+        var editable: Boolean = false,
         var characterCounterEnabled: Boolean = false,
         var validationEnabled: Boolean = false,
         var viewType: ViewTypes = BOXED,
@@ -459,7 +494,9 @@ class TextInputView @JvmOverloads constructor(
                     a.getBoolean(R.styleable.TextInputView_tiv_validationEnabled, false)
                 characterCounterEnabled =
                     a.getBoolean(R.styleable.TextInputView_tiv_characterCounterEnabled, false)
+                editable = a.getBoolean(R.styleable.TextInputView_tiv_editable, true)
                 enabled = a.getBoolean(R.styleable.TextInputView_android_enabled, true)
+                focusable = a.getBoolean(R.styleable.TextInputView_android_focusable, true)
                 viewType =
                     ViewTypes.fromInt(a.getInt(R.styleable.TextInputView_tiv_viewType, BOXED.value))
                 inputAlignment = a.getInteger(R.styleable.TextInputView_tiv_inputAlignment, 0)
@@ -485,11 +522,12 @@ class TextInputView @JvmOverloads constructor(
 
     private fun applyAttributes(resolved: TextInputViewAttributes) {
         resolved.apply {
+            this@TextInputView.isEnabled = enabled
+            this@TextInputView.isFocusable = focusable
             this@TextInputView.allowedCharacters = allowedCharacters
             this@TextInputView.maxCharactersCountLimit = maxCharacters
             this@TextInputView.initInputLayout(resolved)
             this@TextInputView.initEditText(resolved)
-            this@TextInputView.isEnabled = enabled
         }
     }
 
@@ -532,7 +570,8 @@ class TextInputView @JvmOverloads constructor(
         resolvedAttributes.apply {
             editText.gravity = Gravity.TOP or Gravity.START
             editText.setTypeface(Typeface.DEFAULT)
-            editText.showSoftInputOnFocus = true
+            editText.showSoftInputOnFocus = false
+            setIsEditable(editable)
             setInputTextAlignment(inputAlignment)
             setInputTextDirection(inputDirection)
             setLines(minLines, maxLines)
@@ -568,7 +607,6 @@ class TextInputView @JvmOverloads constructor(
         if (allowedCharacters.isNotEmpty()) {
             inputFilters.add(allowedCharactersInputFilter)
         }
-        println(maxCharactersCountLimit)
         if (maxCharactersCountLimit > 0) {
             inputFilters.add(LengthFilter(maxCharactersCountLimit))
         }

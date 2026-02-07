@@ -23,8 +23,8 @@ class HomeFragment : BaseFragment() {
     @Override
     override fun configureActionBar(): ActionBarConfiguration {
         return ActionBarConfiguration(R.id.toolbar)
-            .withSubTitle("Sfasf")
-            .withTitle("ASfasfasf")
+            .withSubTitle("TextInputView")
+            .withTitle("Demo")
     }
 
     @Override

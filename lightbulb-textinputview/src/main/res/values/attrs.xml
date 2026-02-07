@@ -6,6 +6,7 @@
 
     <declare-styleable name="TextInputView">
         <attr name="android:enabled" />
+        <attr name="android:focusable" />
         <attr name="tiv_hintText" format="string" />
         <attr name="tiv_errorTextAppearance" format="reference" />
         <attr name="tiv_hintTextAppearance" format="reference" />
@@ -22,6 +23,7 @@
         <attr name="tiv_maxLines" format="integer" />
         <attr name="tiv_minLines" format="integer" />
         <attr name="tiv_boxStrokeWidth" format="dimension" />
+        <attr name="tiv_editable" format="boolean" />
         <attr name="tiv_characterCounterEnabled" format="boolean" />
         <attr name="tiv_validationEnabled" format="boolean" />
         <attr name="tiv_viewType" format="enum">
