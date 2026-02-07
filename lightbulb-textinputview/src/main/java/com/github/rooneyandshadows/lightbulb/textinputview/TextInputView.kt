@@ -283,6 +283,25 @@ class TextInputView @JvmOverloads constructor(
         return isValid
     }
 
+    fun addInputFilter(filter: InputFilter) {
+        inputFilters.add(filter)
+        syncInputFilters()
+    }
+
+    fun removeInputFilter(filter: InputFilter) {
+        inputFilters.remove(filter)
+        syncInputFilters()
+    }
+
+    fun clearInputFilters() {
+        inputFilters.clear()
+        syncInputFilters()
+    }
+
+    fun getInputFilters(): List<InputFilter>{
+        return inputFilters.toList()
+    }
+
     fun addValidationCheck(validationCallback: ValidationCallback) {
         validationCallbacks.add(validationCallback)
     }
@@ -604,12 +623,15 @@ class TextInputView @JvmOverloads constructor(
 
     private fun syncInputFilters() {
         val inputFilters: MutableList<InputFilter> = mutableListOf()
+        inputFilters.addAll(this.inputFilters)
+
         if (allowedCharacters.isNotEmpty()) {
             inputFilters.add(allowedCharactersInputFilter)
         }
         if (maxCharactersCountLimit > 0) {
             inputFilters.add(LengthFilter(maxCharactersCountLimit))
         }
+
         editText.filters = inputFilters.toTypedArray()
     }
 
