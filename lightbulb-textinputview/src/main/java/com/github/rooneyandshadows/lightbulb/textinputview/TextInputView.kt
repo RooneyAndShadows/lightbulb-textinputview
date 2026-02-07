@@ -62,6 +62,18 @@ class TextInputView @JvmOverloads constructor(
         applyAttributes(resolvedAttributes)
     }
 
+    fun moveCursorsTo(pos: Int) {
+        editText.setSelection(pos)
+    }
+
+    fun moveCursorsToStart() {
+        editText.setSelection(0)
+    }
+
+    fun moveCursorsToEnd() {
+        editText.setSelection(getText().length)
+    }
+
     fun setText(newVal: String) {
         val oldValue: String = editText.text?.toString() ?: ""
         if (oldValue != newVal) {
@@ -298,7 +310,7 @@ class TextInputView @JvmOverloads constructor(
         syncInputFilters()
     }
 
-    fun getInputFilters(): List<InputFilter>{
+    fun getInputFilters(): List<InputFilter> {
         return inputFilters.toList()
     }
 
@@ -390,7 +402,7 @@ class TextInputView @JvmOverloads constructor(
             @JvmStatic
             @BindingAdapter("textAttrChanged")
             fun setListeners(view: TextInputView, attrChange: InverseBindingListener) {
-                view.bindingListener = object : TextChangedCallback {
+                view.bindingListener = object : TextChangedCallback() {
                     override fun onChanged(newValue: String, oldValue: String) {
                         attrChange.onChange()
                     }
@@ -666,6 +678,7 @@ class TextInputView @JvmOverloads constructor(
     private fun initTextWatcher() {
         textWatcher = object : TextWatcher {
             private var oldValue: String = ""
+
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
                 oldValue = s?.toString() ?: ""
             }
@@ -685,6 +698,11 @@ class TextInputView @JvmOverloads constructor(
             }
 
             override fun afterTextChanged(s: Editable?) {
+                val newVal = s?.toString() ?: ""
+
+                for (listener in textChangedListeners) {
+                    listener.afterChanged(newVal, oldValue)
+                }
             }
         }
     }
@@ -698,8 +716,14 @@ class TextInputView @JvmOverloads constructor(
         }
     }
 
-    interface TextChangedCallback {
-        fun onChanged(newValue: String, oldValue: String)
+    abstract class TextChangedCallback {
+        open fun onChanged(newValue: String, oldValue: String) {
+
+        }
+
+        open fun afterChanged(newValue: String, oldValue: String) {
+
+        }
     }
 
     interface ValidationCallback {
