@@ -38,6 +38,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
+                app:tiv_maxCharacters="10"
+                app:tiv_characterCounterEnabled="true"
                 app:tiv_text="@={vm.text}" />
         </LinearLayout>
 

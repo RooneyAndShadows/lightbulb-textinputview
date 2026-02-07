@@ -466,7 +466,7 @@ class TextInputView @JvmOverloads constructor(
                 inputDirection = a.getInteger(R.styleable.TextInputView_tiv_inputDirection, 0)
                 imeOptions = a.getInteger(R.styleable.TextInputView_tiv_imeOptions, 0x00000000)
                 maxLines = a.getInteger(R.styleable.TextInputView_tiv_maxLines, 1)
-                maxCharactersCountLimit =
+                maxCharacters =
                     a.getInteger(R.styleable.TextInputView_tiv_maxCharacters, 0)
                 minLines = a.getInteger(R.styleable.TextInputView_tiv_minLines, 1)
                 boxStrokeWidth = a.getDimensionPixelSize(
@@ -539,6 +539,7 @@ class TextInputView @JvmOverloads constructor(
             setImeOptions(imeOptions)
             setInputType(inputType)
             syncInputFilters()
+            syncInputCounter()
             setText(text)
         }
     }
@@ -567,6 +568,7 @@ class TextInputView @JvmOverloads constructor(
         if (allowedCharacters.isNotEmpty()) {
             inputFilters.add(allowedCharactersInputFilter)
         }
+        println(maxCharactersCountLimit)
         if (maxCharactersCountLimit > 0) {
             inputFilters.add(LengthFilter(maxCharactersCountLimit))
         }
