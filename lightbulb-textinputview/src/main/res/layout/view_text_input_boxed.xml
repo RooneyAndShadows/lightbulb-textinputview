@@ -5,7 +5,7 @@
         style="@style/InputViewBoxed"
         android:tag="inputLayout">
 
-        <com.google.android.material.textfield.TextInputEditText
+        <com.github.rooneyandshadows.lightbulb.textinputview.inner.TextInputEditText
             android:id="@+id/textInputEditText"
             style="@style/InputView.editText"
             android:tag="editText" />

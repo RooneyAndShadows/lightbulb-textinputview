@@ -29,7 +29,7 @@ import androidx.databinding.InverseBindingListener
 import com.github.rooneyandshadows.lightbulb.commons.utils.ParcelUtils
 import com.github.rooneyandshadows.lightbulb.textinputview.TextInputView.ViewTypes.BOXED
 import com.github.rooneyandshadows.lightbulb.textinputview.TextInputView.ViewTypes.OUTLINED
-import com.google.android.material.textfield.TextInputEditText
+import com.github.rooneyandshadows.lightbulb.textinputview.inner.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import kotlin.math.max
 
@@ -224,7 +224,6 @@ class TextInputView @JvmOverloads constructor(
 
     fun setIsEditable(isEditable: Boolean) {
         editable = isEditable
-        editText.showSoftInputOnFocus = isEditable
         editText.isCursorVisible = isEditable
         editText.isFocusable = isEditable
         editText.isFocusableInTouchMode = isEditable
@@ -417,7 +416,7 @@ class TextInputView @JvmOverloads constructor(
         setValidationEnabled(savedState.validationEnabled)
         setIsEditable(savedState.editable)
 
-        if (!savedState.editable && savedState.focused) {
+        if (savedState.editable && savedState.focused) {
             val start = editText.selectionStart
             val end = editText.selectionEnd
 
