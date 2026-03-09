@@ -1,5 +1,6 @@
 package com.github.rooneyandshadows.lightbulb.textinputview
 
+import android.app.Activity
 import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Typeface
@@ -16,7 +17,9 @@ import android.text.TextWatcher
 import android.util.AttributeSet
 import android.util.SparseArray
 import android.view.Gravity
+import android.view.KeyEvent
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.RelativeLayout
 import androidx.annotation.ColorInt
 import androidx.annotation.StyleRes
@@ -38,14 +41,17 @@ class TextInputView @JvmOverloads constructor(
     private val defStyleRes: Int = R.style.Lightbulb_TextInputView_Boxed,
 ) : RelativeLayout(context, attrs, defStyleAttr, defStyleRes) {
     private val inputLayout: TextInputLayout by lazy {
-        findViewById(R.id.textInputLayout)
+        val view = findViewById<TextInputLayout>(R.id.textInputLayout)
+        view.id = NO_ID
+        return@lazy view
     }
     private val editText: TextInputEditText by lazy {
-        findViewById(R.id.textInputEditText)
+        val view = findViewById<TextInputEditText>(R.id.textInputEditText)
+        view.id = NO_ID
+        return@lazy view
     }
     private var allowedCharacters: String = ""
     private var maxCharactersCountLimit: Int = 0
-    private var editable: Boolean = false
     private var validationEnabled: Boolean = false
     private var bindingListener: TextChangedCallback? = null
     private val inputFilters: MutableList<InputFilter> = mutableListOf()
@@ -215,21 +221,6 @@ class TextInputView @JvmOverloads constructor(
         return editText.minLines
     }
 
-    fun setIsEditable(isEditable: Boolean) {
-        editable = isEditable
-        editText.showSoftInputOnFocus = isEditable
-        editText.isCursorVisible = isEditable
-        editText.isFocusable = isEditable
-        editText.isFocusableInTouchMode = isEditable
-        inputLayout.isFocusable = isEditable
-        inputLayout.isFocusableInTouchMode = isEditable
-        editText.isClickable = true
-    }
-
-    fun isEditable(): Boolean {
-        return editable
-    }
-
     fun setCharacterCounterEnabled(enabled: Boolean) {
         inputLayout.isCounterEnabled = enabled
         this.syncInputCounter()
@@ -277,6 +268,29 @@ class TextInputView @JvmOverloads constructor(
 
     fun getImeOptions(): Int {
         return editText.imeOptions
+    }
+
+    fun setOnImeActionListener(callback: ((actionId: Int, event: KeyEvent?) -> Unit)?) {
+        if (callback == null) {
+            editText.setOnEditorActionListener(null)
+        } else {
+            editText.setOnEditorActionListener { _, actionId, event ->
+                callback.invoke(actionId, event)
+                true
+            }
+        }
+    }
+
+    fun showKeyboard() {
+        requestFocus()
+        val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.showSoftInput(editText, InputMethodManager.SHOW_IMPLICIT)
+    }
+
+    fun hideKeyboard() {
+        val rootView = this.rootView
+        val imm = context.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(rootView.windowToken, 0)
     }
 
     fun validate(): Boolean {
@@ -368,6 +382,7 @@ class TextInputView @JvmOverloads constructor(
         myState.allowedCharacters = allowedCharacters
         myState.maxCharactersCountLimit = maxCharactersCountLimit
         myState.validationEnabled = validationEnabled
+        myState.focused = editText.isFocused
         myState.editTextState = editText.onSaveInstanceState()
         val inputHierarchyState = SparseArray<Parcelable>()
         inputLayout.saveHierarchyState(inputHierarchyState)
@@ -383,6 +398,19 @@ class TextInputView @JvmOverloads constructor(
         setAllowedCharacters(savedState.allowedCharacters)
         setMaxCharacters(savedState.maxCharactersCountLimit)
         setValidationEnabled(savedState.validationEnabled)
+
+        if (savedState.focused) {
+            val start = editText.selectionStart
+            val end = editText.selectionEnd
+
+            editText.post {
+                val length = editText.text?.length ?: 0
+                val resolvedStart = start.coerceIn(0, length)
+                val resolvedEnd = end.coerceIn(0, length)
+                editText.setSelection(resolvedStart, resolvedEnd)
+                editText.requestFocus()
+            }
+        }
     }
 
     class BindingAdapters {
@@ -414,8 +442,10 @@ class TextInputView @JvmOverloads constructor(
     @Suppress("DEPRECATION")
     private class SavedState : BaseSavedState {
         var allowedCharacters: String = ""
-        var maxCharactersCountLimit: Int = -1
+        var maxCharactersCountLimit: Int = 0
+        var imeOptions: Int = 0
         var validationEnabled: Boolean = false
+        var focused: Boolean = false
         var editTextState: Parcelable? = null
         var inputLayoutState: SparseArray<Parcelable>? = null
 
@@ -424,7 +454,9 @@ class TextInputView @JvmOverloads constructor(
         private constructor(inputState: Parcel) : super(inputState) {
             allowedCharacters = ParcelUtils.readString(inputState) ?: ""
             maxCharactersCountLimit = ParcelUtils.readInt(inputState) ?: 0
+            imeOptions = ParcelUtils.readInt(inputState) ?: 0
             validationEnabled = ParcelUtils.readBoolean(inputState) ?: false
+            focused = ParcelUtils.readBoolean(inputState) ?: false
             editTextState = inputState.readParcelable(javaClass.classLoader)
             inputLayoutState = inputState.readSparseArray(javaClass.classLoader)
         }
@@ -433,7 +465,9 @@ class TextInputView @JvmOverloads constructor(
             super.writeToParcel(out, flags)
             ParcelUtils.writeString(out, allowedCharacters)
             ParcelUtils.writeInt(out, maxCharactersCountLimit)
+            ParcelUtils.writeInt(out, imeOptions)
             ParcelUtils.writeBoolean(out, validationEnabled)
+            ParcelUtils.writeBoolean(out, focused)
 
             out.writeParcelable(editTextState, flags)
             out.writeSparseArray(inputLayoutState)
@@ -471,7 +505,6 @@ class TextInputView @JvmOverloads constructor(
         var maxLines: Int = -1,
         var minLines: Int = -1,
         var boxStrokeWidth: Int = -1,
-        var editable: Boolean = false,
         var characterCounterEnabled: Boolean = false,
         var validationEnabled: Boolean = false,
         var viewType: ViewTypes = BOXED,
@@ -525,7 +558,6 @@ class TextInputView @JvmOverloads constructor(
                     a.getBoolean(R.styleable.TextInputView_tiv_validationEnabled, false)
                 characterCounterEnabled =
                     a.getBoolean(R.styleable.TextInputView_tiv_characterCounterEnabled, false)
-                editable = a.getBoolean(R.styleable.TextInputView_tiv_editable, true)
                 enabled = a.getBoolean(R.styleable.TextInputView_android_enabled, true)
                 focusable = a.getBoolean(R.styleable.TextInputView_android_focusable, true)
                 viewType =
@@ -598,19 +630,18 @@ class TextInputView @JvmOverloads constructor(
 
     private fun initEditText(resolvedAttributes: TextInputViewAttributes) {
         editText.addTextChangedListener(textWatcher)
-        resolvedAttributes.apply {
+        resolvedAttributes.let { attrs ->
             editText.gravity = Gravity.TOP or Gravity.START
             editText.setTypeface(Typeface.DEFAULT)
-            editText.showSoftInputOnFocus = false
-            setIsEditable(editable)
-            setInputTextAlignment(inputAlignment)
-            setInputTextDirection(inputDirection)
-            setLines(minLines, maxLines)
-            setImeOptions(imeOptions)
-            setInputType(inputType)
+            editText.showSoftInputOnFocus = true
+            setInputTextAlignment(attrs.inputAlignment)
+            setInputTextDirection(attrs.inputDirection)
+            setLines(attrs.minLines, attrs.maxLines)
+            setInputType(attrs.inputType)
+            setImeOptions(attrs.imeOptions)
             syncInputFilters()
             syncInputCounter()
-            setText(text)
+            setText(attrs.text)
         }
     }
 
