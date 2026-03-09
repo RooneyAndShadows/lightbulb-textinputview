@@ -13,30 +13,19 @@ class TextInputEditText @JvmOverloads constructor(
 ) : TextInputEditText(context, attrs) {
     private var pendingShow = false
 
-
-    init {
-        setOnFocusChangeListener { _, hasFocus ->
-            if (hasFocus) {
-                pendingShow = true
-            } else {
-                pendingShow = false
-                val imm = context.getSystemService(
-                    Context.INPUT_METHOD_SERVICE
-                ) as InputMethodManager
-                imm.hideSoftInputFromWindow(rootView.windowToken, 0)
-            }
-        }
+    fun requestFocusWithKeyboard() {
+        pendingShow = true
+        requestFocus()
     }
 
     override fun onCreateInputConnection(outAttrs: EditorInfo): InputConnection? {
         val ic = super.onCreateInputConnection(outAttrs)
 
-        post {
-            if (pendingShow && isAttachedToWindow && isFocused) {
-                val imm = context.getSystemService(
-                    Context.INPUT_METHOD_SERVICE
-                ) as InputMethodManager?
+        if (pendingShow && isFocused) {
+            post {
+                val imm = context.getSystemService(InputMethodManager::class.java)
                 imm?.showSoftInput(this, InputMethodManager.SHOW_IMPLICIT)
+                pendingShow = false
             }
         }
 

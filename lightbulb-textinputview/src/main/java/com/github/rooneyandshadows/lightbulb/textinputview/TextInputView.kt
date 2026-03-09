@@ -425,7 +425,7 @@ class TextInputView @JvmOverloads constructor(
                 val resolvedStart = start.coerceIn(0, length)
                 val resolvedEnd = end.coerceIn(0, length)
                 editText.setSelection(resolvedStart, resolvedEnd)
-                editText.requestFocus()
+                editText.requestFocusWithKeyboard()
             }
         }
     }
@@ -655,7 +655,7 @@ class TextInputView @JvmOverloads constructor(
         resolvedAttributes.let { attrs ->
             editText.gravity = Gravity.TOP or Gravity.START
             editText.setTypeface(Typeface.DEFAULT)
-            editText.showSoftInputOnFocus = false
+            //editText.showSoftInputOnFocus = false
             setIsEditable(attrs.editable)
             setInputTextAlignment(attrs.inputAlignment)
             setInputTextDirection(attrs.inputDirection)
