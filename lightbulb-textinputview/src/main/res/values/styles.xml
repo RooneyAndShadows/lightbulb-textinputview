@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="InputViewOutlined" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
+    <style name="InputViewOutlined" parent="Widget.Material3.TextInputLayout.OutlinedBox.Dense">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
     </style>
 
-    <style name="InputViewBoxed" parent="Widget.MaterialComponents.TextInputLayout.FilledBox.Dense">
+    <style name="InputViewBoxed" parent="Widget.Material3.TextInputLayout.FilledBox.Dense">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
     </style>
 
     <style name="InputView" />
 
-    <style name="InputView.editText" parent="ThemeOverlay.MaterialComponents.TextInputEditText">
+    <style name="InputView.editText" parent="ThemeOverlay.Material3.TextInputEditText">
         <item name="android:imeOptions">flagNoExtractUi</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_width">match_parent</item>
